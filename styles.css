@@ -1,5 +1,5 @@
 :root {
-    --green:#1cb171;
+    --green:rgb(28, 177, 113);
     --border-radius: 5px;
   }
 
@@ -7,26 +7,48 @@ body {
     height:100vh;
     padding:20px;
     background-color: #f0f0f0;
+    font-family: 'Arial', sans-serif;
+    font-weight: normal;
 }
 
 h1 {
-    font-family: 'Arial', sans-serif;
-    font-weight: 200;
+    font-weight: normal;
     font-size: 3em;
     line-height: 1.05em;
     padding:30px 0;
     margin:0;
 }
 
+p a {
+    color: rgb(0, 68, 255);
+    text-decoration: none;
+}
+
+p a:hover{
+    text-decoration: underline;
+}
+
 nav{
-    width:fit-content;
+    width:100%;
+}
+
+#info-popup{
+    display:none;
+    position:absolute;
+    background:rgba(28, 177, 113, 0.75);
+    backdrop-filter: blur(10px);
+    margin: auto;
+    border-radius: var(--border-radius);
+    padding:5px 20px;
+    border:1px solid black;
+    width:calc(100vw - 95px);
 }
 
 button {
     background: black;
     color:white;
     border-radius: var(--border-radius);
-    border: 0px;
+    border: 1px solid black;
     padding: 0px 20px;
     width: fit-content;
     height: 50px;
@@ -39,6 +61,7 @@ button {
 button:hover,
 button:active{
     background: #525252;
+    box-shadow: 0 0 30px 5px var(--green);
 }
 
 button p{
@@ -47,7 +70,7 @@ button p{
 
 .secondary-button{
     background:#D0D0D0;
-    color:white;
+    color:black;
 }
 
 .secondary-button:hover,
@@ -176,5 +199,25 @@ th {
     .no-cell, 
     .yes-cell{
         width:100px;
+    }
+
+    button {
+        padding: 0px 15px;
+        width: fit-content;
+        height: 30px;
+        min-width:30px;
+    }
+
+    input {
+        width: 250px;
+        height:30px;
+        padding: 0 0 0 15px;
+    }
+
+    #info-popup{
+        bottom:45px;
+        width: 50vw;
+        padding:0 15px;
+        box-shadow: 0 0 60px 7px var(--green);
     }
 }

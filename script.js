@@ -342,3 +342,13 @@ window.addEventListener('DOMContentLoaded', () => {
     // Add event listeners to reset buttons
     document.getElementById('resetButton')?.addEventListener('click', resetQuiz);
 });
+
+// Function to toggle the visibility of the info section
+function showInfo() {
+    var x = document.getElementById("info-popup");
+    if (x.style.display === "block") {
+      x.style.display = "none";
+    } else {
+      x.style.display = "block";
+    }
+  }
