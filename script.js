@@ -171,9 +171,9 @@ function handleAnswer(buttonElement) {
         // Create a different message based on which column has more points
         let completionHTML = '';
         if (yesTotal > noTotal) {
-            completionHTML = `<h1>Sounds like you’ve really thought this through—go ahead and buy the ${itemName}!</h1>`;
+            completionHTML = `<h1>Sounds like you’ve really thought this through—go ahead and buy the <span class="item-placeholder">${itemName}</span>!</h1>`;
         } else if (noTotal >= yesTotal) {
-            completionHTML = `<h1>We both know you shouldn’t spend this money on the ${itemName} right now.<br><br> Try again next time babes.</h1>`;
+            completionHTML = `<h1>We both know you shouldn’t spend this money on the <span class="item-placeholder">${itemName}</span> right now.<br><br> Try again next time babes.</h1>`;
         } 
         
         // Show completion message
