@@ -10,50 +10,91 @@
 <body>
     <nav>
         <button class="secondary-button">info</button>
+        <a href="../index.html"><button id="resetButton" class="secondary-button">restart</button></a>
     </nav>
 
     <section id="section1">
         <h1>What is it?</h1>
         <div class="input-container">
-            <input type="text" id="itemInput" placeholder="Enter the item you're considering...">
+            <input type="text" id="itemInput" placeholder="object">
             <button id="submitItem">enter</button>
         </div>
     </section>
 
     <section id="section2">
-        <h1>Does <span class="item-placeholder">_____</span> solve some problem you keep noticing?</h1>
+        <h1>Does the <span class="item-placeholder"></span></span> solve some problem you keep noticing?</h1>
         <button value="1">yes</button>
         <button value="2">no</button>
     </section>
 
     <section id="section3">
-        <h1>Will <span class="item-placeholder">_____</span> meaningfully improve your day-to-day life?</h1>
+        <h1>Do you already own something similar?</h1>
         <button value="1">yes</button>
         <button value="2">no</button>
     </section>
 
     <section id="section4">
-        <h1>Is <span class="item-placeholder">_____</span> worth the cost?</h1>
+        <h1>Where will the <span class="item-placeholder">_____</span> be in 5 years?</h1>
+        <button value="1">used or in use</button>
+        <button value="2">not in use</button>
+    </section>
+
+    <section id="section5">
+        <h1>Where will you put the <span class="item-placeholder">_____</span> if you buy it?</h1>
+        <button value="1">i have a place in mind</button>
+        <button value="2">not sure</button>
+    </section>
+
+    <section id="section6">
+        <h1>How long will you have to work to pay for the <span class="item-placeholder">_____</span>?</h1>
+        <button value="1">less than 8 hours</button>
+        <button value="2">more than 8 hours</button>
+    </section>
+
+    <section id="section7">
+        <h1>Can you be productive and happy without the <span class="item-placeholder">_____</span>?</h1>
         <button value="1">yes</button>
         <button value="2">no</button>
     </section>
 
-    <!-- make the js handle the counting part and input in the table -->
-    <!-- use toggle for hide/show display -->
+    <section id="section8">
+        <h1>Are you only interested in <span class="item-placeholder">_____</span> because it's on sale?</h1>
+        <button value="1">yes</button>
+        <button value="2">no</button>
+    </section>
+
+    <section id="section9">
+        <h1>Can you borrow the <span class="item-placeholder">_____</span> from someone else?</h1>
+        <button value="1">yes</button>
+        <button value="2">no</button>
+    </section>
+
+    <section id="section10">
+        <h1>Is the <span class="item-placeholder">_____</span> high-quality with a reasonable price tag?</h1>
+        <button value="1">yes</button>
+        <button value="2">no</button>
+    </section>
+
+    <section id="section11">
+        <h1>What is your current mental state?</h1>
+        <button value="1">calm and neutral</button>
+        <button value="2">altered by internal or external forces (ex. I'm bored)</button>
+    </section>
+
+    <section id="section12">
+        <h1>What is the real reason you're considering buying the <span class="item-placeholder">_____</span>?</h1>
+        <button value="1">an intentional reason</button>
+        <button value="2">an impulsive reason</button>
+    </section>
+
+    <section id="section13">
+        <h1>What the <span class="item-placeholder">_____</span> require additional expenses or purchases?</h1>
+        <button value="1">yes</button>
+        <button value="2">no</button>
+    </section>
 
     <section id="resultsSection">
-        <table id="resultsTable">
-            <thead>
-                <tr>
-                    <th>buy it</th>
-                    <th>don't buy it</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- This will be populated by JavaScript -->
-            </tbody>
-        </table>
-        <a href="../index.html"><button id="resetButton">restart</button></a>
+        <table id="resultsTable"></table>
     </section>
 
 </body>

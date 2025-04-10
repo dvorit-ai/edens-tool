@@ -1,10 +1,14 @@
+:root {
+    --green:#1cb171;
+    --border-radius: 5px;
+  }
+
 body {
     width:calc(100vw - 30px);
     height:100vh;
     margin:0;
     padding:15px;
     background-color: #f0f0f0;
-    overflow:hidden;
 }
 
 h1 {
@@ -17,11 +21,15 @@ h1 {
 button {
     background: black;
     color:white;
-    border-radius: 3px;
+    border-radius: var(--border-radius);
     border: 0px;
-    padding: 0px 15px;
+    padding: 0px 20px;
     width: fit-content;
-    height: 44px;
+    height: 50px;
+    min-width:50px;
+    font-size:1em;
+    cursor:pointer;
+    margin-right:3px;
 }
 
 button:hover,
@@ -47,29 +55,79 @@ input {
     background:black;
     color:white;
     border:0px;
-    border-radius: 3px;
+    border-radius: var(--border-radius);
     width: 250px;
-    height:44px;
-    padding-left: 15px;
+    height:50px;
+    padding: 0 0 0 20px;
+    font-size:1em;
+}
+
+.input-container {
+    margin-top: 15px;
+    display: flex;
+    gap: 7px;
+}
+
+.item-placeholder {
+    color:var(--green);
 }
 
 /* TABLE STYLING */
 
 #resultsSection{
-    position:fixed;
-    bottom:15px;
-    height: 30vh;
+    margin: 50px 0 0 -7px;
+    font-size:0.75em;
+    font-family: 'Arial', sans-serif;
+    padding-bottom:50px;
 }
 
-table {
+/* Table styles */
+#resultsTable {
     border-collapse: separate;
-    border-spacing:15px;
+    border-spacing: 7px;
 }
+
 
 th {
-    background: #000;
-    color: #fff;
-    padding: 5px;
-    border-radius:3px;
+    text-align:center;
+    border-radius:var(--border-radius);
+    background:black;
+    color:white;
+    font-weight:normal;
+    width: fit-content;
+    height:30px;
+    min-width:40vw;
+}
+
+#resultsTable th:nth-child(3) {
+    background-color: transparent;
+    border: none;
+    min-width:0;
+}
+
+#resultsTable td:nth-child(3) {
+    border: none;
+    width:fit-content;
+}
+
+.yes-cell {
+    color: green;
+}
+
+.no-cell {
+    color: #cc0000;
+}
+
+.empty-cell, .no-cell, .yes-cell{
+    border:1px solid black;
+    border-radius:var(--border-radius);
+    padding:5px;
+    height:20px;
     width:100px;
 }
+
+#resultsTable tfoot td {
+    border: none;
+    padding-top: 20px;
+}
+

@@ -2,6 +2,23 @@
 let userAnswers = [];
 let itemName = "";
 
+// Define point values for each section
+const sectionPoints = {
+    section2: 4,
+    section3: 1,
+    section4: 3,
+    section5: 2,
+    section6: 4,
+    section7: 2,
+    section8: 2,
+    section9: 4,
+    section10: 2,
+    section11: 3,
+    section12: 4,
+    section13: 1
+    // Add more sections as needed
+};
+
 // Get all sections
 const sections = document.querySelectorAll('section');
 let currentSectionIndex = 0;
@@ -22,22 +39,16 @@ function handleFirstQuestion() {
         // Store the item name
         itemName = inputField.value.trim();
         
-        // Store the answer
-        userAnswers.push({
-            question: "What is it?",
-            answer: itemName
-        });
-        
-        // Update the results table
-        updateResultsTable();
-        
         // Update all subsequent questions with the item name
         updateQuestions();
+        
+        // Initialize the results table with all rows
+        initializeResultsTable();
         
         // Move to the next section
         currentSectionIndex++;
         showSection(currentSectionIndex);
-    } 
+    }
 }
 
 // Function to update all questions with the item name
@@ -53,24 +64,85 @@ function updateQuestions() {
     }
 }
 
+// Function to initialize the results table with all question rows
+function initializeResultsTable() {
+    const table = document.getElementById('resultsTable');
+    if (!table) return;
+    
+    // Clear existing table
+    table.innerHTML = '';
+    
+    // Create table header
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+        <tr>
+            <th>buy it</th>
+            <th>don't buy it</th>
+            <th></th>
+        </tr>
+    `;
+    table.appendChild(thead);
+    
+    // Create table body with empty rows for all questions
+    const tbody = document.createElement('tbody');
+    
+    // Create a row for each question (excluding the first input question)
+    for (let i = 1; i < sections.length; i++) {
+        if (sections[i].id !== 'resultsSection') {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td id="yes-cell-${i}" class="empty-cell"></td>
+                <td id="no-cell-${i}" class="empty-cell"></td>
+                <td>Q${i}</td>
+            `;
+            tbody.appendChild(row);
+        }
+    }
+    
+    table.appendChild(tbody);
+    
+    // Create table footer for totals
+    const tfoot = document.createElement('tfoot');
+    tfoot.innerHTML = `
+        <tr>
+            <td id="yesTotal">0 points</td>
+            <td id="noTotal">0 points</td>
+            <td></td>
+        </tr>
+    `;
+    table.appendChild(tfoot);
+}
+
 // Function to handle button clicks for yes/no questions
 function handleAnswer(buttonElement) {
-    // Get the current question text (with the item name already inserted)
-    const questionText = sections[currentSectionIndex].querySelector('h1').textContent;
+    const currentSection = sections[currentSectionIndex];
+    const sectionId = currentSection.id;
+    const buttonValue = buttonElement.value;
     
-    // Store the answer
+    // Get point value for this section
+    const pointValue = sectionPoints[sectionId] || 0;
+    
+    // Store the answer with points
     userAnswers.push({
-        question: questionText,
-        answer: buttonElement.textContent,
-        value: buttonElement.value
+        questionId: sectionId,
+        value: buttonValue,
+        points: pointValue,
+        questionNumber: currentSectionIndex // Store the question number for display
     });
 
-    // Update the results table
-    updateResultsTable();
+    // Update specific table cell for this question
+    updateTableCell(currentSectionIndex, buttonValue, pointValue);
+    
+    // Update totals
+    updateTotals();
 
     // Move to next section
     currentSectionIndex++;
-    if (currentSectionIndex < sections.length) {
+    
+    // Count actual question sections (excluding resultsSection)
+    const questionSections = Array.from(sections).filter(section => section.id !== 'resultsSection');
+    
+    if (currentSectionIndex < questionSections.length) {
         showSection(currentSectionIndex);
     } else {
         // Show completion message
@@ -79,36 +151,128 @@ function handleAnswer(buttonElement) {
                 section.style.display = 'none';
             }
         });
+
+        sections.forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Calculate final totals for comparison
+        let yesTotal = 0;
+        let noTotal = 0;
+    
+        userAnswers.forEach(answer => {
+            if (answer.value === "1") {
+                yesTotal += answer.points;
+            } else if (answer.value === "2") {
+                noTotal += answer.points;
+            }
+        });
         
+        // Create a different message based on which column has more points
+        let completionHTML = '';
+        if (yesTotal > noTotal) {
+            completionHTML = `<h1>Sounds like you’ve really thought this through—go ahead and buy the ${itemName}!</h1>`;
+        } else if (noTotal >= yesTotal) {
+            completionHTML = `<h1>We both know you shouldn’t spend this money on the ${itemName} right now.<br><br> Try again next time babes.</h1>`;
+        } 
+        
+        // Show completion message
         const completionMessage = document.getElementById('completionMessage');
         if (completionMessage) {
+            completionMessage.innerHTML = completionHTML;
             completionMessage.style.display = 'block';
         } else {
             const message = document.createElement('div');
             message.id = 'completionMessage';
-            message.innerHTML = `<h2>You have completed all questions about "${itemName}"!</h2>`;
-            document.getElementById('resultsSection').prepend(message);
+            message.innerHTML = completionHTML;
+            document.body.appendChild(message); // Append to body instead of resultsSection
         }
     }
 }
 
-// Function to update the results table with current answers
-function updateResultsTable() {
-    const tableBody = document.querySelector('#resultsTable tbody');
-    if (!tableBody) return;
+// Function to generate checkmarks or X marks based on points
+function generateMarks(points, isYes) {
+    if (points === 0) return '';
     
-    // Clear existing rows
-    tableBody.innerHTML = '';
+    let marks = '';
+    const symbol = isYes ? '✓' : '✕';
     
-    // Add a row for each answer
+    for (let i = 0; i < points; i++) {
+        marks += symbol;
+    }
+    
+    return marks;
+}
+
+// Function to update a specific table cell
+function updateTableCell(questionIndex, answerValue, points) {
+    // Get the cells for this question
+    const yesCell = document.getElementById(`yes-cell-${questionIndex}`);
+    const noCell = document.getElementById(`no-cell-${questionIndex}`);
+    
+    if (!yesCell || !noCell) return;
+    
+    // Clear both cells first
+    yesCell.innerHTML = '';
+    yesCell.className = 'empty-cell';
+    yesCell.style.backgroundColor = '';
+    
+    noCell.innerHTML = '';
+    noCell.className = 'empty-cell';
+    noCell.style.backgroundColor = '';
+    
+    // Update the appropriate cell based on the answer
+    if (answerValue === "1") {
+        // Update yes cell
+        yesCell.innerHTML = generateMarks(points, true);
+        yesCell.className = 'yes-cell';
+        
+        // Set opacity based on points
+        const opacity = Math.min(0.2 + (points * 0.1), 0.5);
+        yesCell.style.backgroundColor = `rgba(144, 238, 144, ${opacity})`;
+    } else if (answerValue === "2") {
+        // Update no cell
+        noCell.innerHTML = generateMarks(points, false);
+        noCell.className = 'no-cell';
+        
+        // Set opacity based on points
+        const opacity = Math.min(0.2 + (points * 0.1), 0.5);
+        noCell.style.backgroundColor = `rgba(255, 182, 193, ${opacity})`;
+    }
+}
+
+// Function to update the point totals
+function updateTotals() {
+    let yesTotal = 0;
+    let noTotal = 0;
+    
     userAnswers.forEach(answer => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${answer.question}</td>
-            <td>${answer.answer}</td>
-        `;
-        tableBody.appendChild(row);
+        if (answer.value === "1") {
+            yesTotal += answer.points;
+        } else if (answer.value === "2") {
+            noTotal += answer.points;
+        }
     });
+    
+    // Update the totals in the table footer
+    const yesTotalElement = document.getElementById('yesTotal');
+    const noTotalElement = document.getElementById('noTotal');
+    
+    if (yesTotalElement) {
+        yesTotalElement.textContent = `${yesTotal} points`;
+        yesTotalElement.style.backgroundColor = 'rgba(144, 238, 144, 0.5)';
+        yesTotalElement.style.borderRadius = '20px';
+        yesTotalElement.style.padding = '8px';
+        yesTotalElement.style.textAlign = 'center';
+    }
+    
+    if (noTotalElement) {
+        noTotalElement.textContent = `${noTotal} points`;
+        noTotalElement.style.backgroundColor = 'rgba(255, 182, 193, 0.5)';
+        noTotalElement.style.borderRadius = '20px';
+        noTotalElement.style.padding = '8px';
+        noTotalElement.style.textAlign = 'center';
+    }
 }
 
 // Function to reset the quiz
@@ -136,21 +300,14 @@ function resetQuiz() {
         completionMessage.style.display = 'none';
     }
     
-    // Clear the results table
-    updateResultsTable();
+    // Reset the results table
+    const resultsTable = document.getElementById('resultsTable');
+    if (resultsTable) {
+        resultsTable.innerHTML = '';
+    }
     
     // Show first section again
     showSection(0);
-}
-
-// Function to try closing the browser tab
-function closeCurrentTab() {
-    window.close();
-    
-    // Fallback message if window.close() is blocked
-    setTimeout(() => {
-        alert("Please close this tab manually if it didn't close automatically.");
-    }, 300);
 }
 
 // Initialize the questionnaire
@@ -190,15 +347,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Add event listener to reset button
-    const resetButton = document.getElementById('resetButton');
-    if (resetButton) {
-        resetButton.addEventListener('click', resetQuiz);
-    }
-    
-    // Add event listener to close button
-    const closeButton = document.getElementById('closeButton');
-    if (closeButton) {
-        closeButton.addEventListener('click', closeCurrentTab);
-    }
+    // Add event listeners to reset buttons
+    document.getElementById('resetButton')?.addEventListener('click', resetQuiz);
 });
