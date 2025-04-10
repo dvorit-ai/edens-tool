@@ -195,7 +195,7 @@ function generateMarks(points, isYes) {
     if (points === 0) return '';
     
     let marks = '';
-    const symbol = isYes ? '✓' : '✕';
+    const symbol = isYes ? '✔' : '✘';
     
     for (let i = 0; i < points; i++) {
         marks += symbol;
@@ -228,16 +228,16 @@ function updateTableCell(questionIndex, answerValue, points) {
         yesCell.className = 'yes-cell';
         
         // Set opacity based on points
-        const opacity = Math.min(0.2 + (points * 0.1), 0.5);
-        yesCell.style.backgroundColor = `rgba(144, 238, 144, ${opacity})`;
+        const opacity = Math.min(0.2 + (points * 0.2), 1);
+        yesCell.style.backgroundColor = `rgba(132, 159, 232, ${opacity})`;
     } else if (answerValue === "2") {
         // Update no cell
         noCell.innerHTML = generateMarks(points, false);
         noCell.className = 'no-cell';
         
         // Set opacity based on points
-        const opacity = Math.min(0.2 + (points * 0.1), 0.5);
-        noCell.style.backgroundColor = `rgba(255, 182, 193, ${opacity})`;
+        const opacity = Math.min(0.2 + (points * 0.2), 1);
+        noCell.style.backgroundColor = `rgba(247, 148, 73, ${opacity})`;
     }
 }
 
@@ -257,22 +257,14 @@ function updateTotals() {
     // Update the totals in the table footer
     const yesTotalElement = document.getElementById('yesTotal');
     const noTotalElement = document.getElementById('noTotal');
-    
+
     if (yesTotalElement) {
         yesTotalElement.textContent = `${yesTotal} points`;
-        yesTotalElement.style.backgroundColor = 'rgba(144, 238, 144, 0.5)';
-        yesTotalElement.style.borderRadius = '20px';
-        yesTotalElement.style.padding = '8px';
-        yesTotalElement.style.textAlign = 'center';
     }
-    
+
     if (noTotalElement) {
         noTotalElement.textContent = `${noTotal} points`;
-        noTotalElement.style.backgroundColor = 'rgba(255, 182, 193, 0.5)';
-        noTotalElement.style.borderRadius = '20px';
-        noTotalElement.style.padding = '8px';
-        noTotalElement.style.textAlign = 'center';
-    }
+}
 }
 
 // Function to reset the quiz

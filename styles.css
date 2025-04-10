@@ -29,7 +29,7 @@ button {
     min-width:50px;
     font-size:1em;
     cursor:pointer;
-    margin-right:3px;
+    margin:0 3px 7px 0;
 }
 
 button:hover,
@@ -85,11 +85,10 @@ input {
 #resultsTable {
     border-collapse: separate;
     border-spacing: 7px;
+    text-align:center;
 }
 
-
 th {
-    text-align:center;
     border-radius:var(--border-radius);
     background:black;
     color:white;
@@ -110,15 +109,9 @@ th {
     width:fit-content;
 }
 
-.yes-cell {
-    color: green;
-}
-
-.no-cell {
-    color: #cc0000;
-}
-
-.empty-cell, .no-cell, .yes-cell{
+.empty-cell, 
+.no-cell, 
+.yes-cell{
     border:1px solid black;
     border-radius:var(--border-radius);
     padding:5px;
@@ -126,8 +119,18 @@ th {
     width:100px;
 }
 
-#resultsTable tfoot td {
-    border: none;
-    padding-top: 20px;
+#yesTotal, #noTotal {
+    border:1px solid black;
+    border-radius:var(--border-radius);
+    font-weight:normal;
+    height:30px;
 }
 
+
+#yesTotal {
+    background-color: rgb(132, 159, 232);
+}
+
+#noTotal {
+    background-color: rgb(247, 148, 73);
+}
