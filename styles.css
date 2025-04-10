@@ -83,6 +83,7 @@ input {
     font-size:0.75em;
     font-family: 'Arial', sans-serif;
     padding-bottom:50px;
+    width:calc(100% + 14px);
 }
 
 /* Table styles */
@@ -119,7 +120,8 @@ th {
     border-radius:var(--border-radius);
     padding:5px;
     height:20px;
-    width:100px;
+    width:50%;
+    max-width:100px;
 }
 
 #yesTotal, #noTotal {
@@ -170,4 +172,9 @@ th {
         margin:0;
     }
 
+    .empty-cell, 
+    .no-cell, 
+    .yes-cell{
+        width:100px;
+    }
 }
