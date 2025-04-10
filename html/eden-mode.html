@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eden's Tool</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../script.js" defer></script>
+</head>
+<body>
+    <nav>
+        <button class="secondary-button">info</button>
+    </nav>
+
+    <section id="section1">
+        <h1>What is it?</h1>
+        <div class="input-container">
+            <input type="text" id="itemInput" placeholder="Enter the item you're considering...">
+        </div>
+    </section>
+
+    <section id="section2">
+        <h1>Does <span class="item-placeholder">_____</span> solve some problem you keep noticing?</h1>
+        <button value="1">yes</button>
+        <button value="2">no</button>
+    </section>
+
+    <section id="section3">
+        <h1>Will <span class="item-placeholder">_____</span> meaningfully improve your day-to-day life?</h1>
+        <button value="1">yes</button>
+        <button value="2">no</button>
+    </section>
+
+    <section id="section4">
+        <h1>Is <span class="item-placeholder">_____</span> worth the cost?</h1>
+        <button value="1">yes</button>
+        <button value="2">no</button>
+    </section>
+
+    <!-- make the js handle the counting part and input in the table -->
+    <!-- use toggle for hide/show display -->
+
+    <section id="resultsSection">
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>buy it</th>
+                    <th>don't buy it</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- This will be populated by JavaScript -->
+            </tbody>
+        </table>
+        <a href="../index.html"><button id="resetButton">Start Over</button></a>
+    </section>
+
+</body>
+</html>
