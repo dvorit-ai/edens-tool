@@ -179,7 +179,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
+
     // Add click event listeners to all yes/no buttons in other sections
     for (let i = 1; i < sections.length; i++) {
         if (sections[i].id !== 'resultsSection') {
