@@ -189,6 +189,7 @@ th {
     border-radius: 10px;
     border: 2px solid black;
     text-align: center;
+    width:15rem;
 }
 
 .popup-buttons {
@@ -196,6 +197,16 @@ th {
     justify-content: center;
     gap: 10px;
     margin-top: 15px;
+}
+
+#smallButton{
+    width: fit-content;
+    height: 10px;
+    font-size: 0.01em;
+    min-width: 0px;
+    padding: 0px;
+    border-radius: 3px;
+    opacity:0.1;
 }
 
 @media (min-width: 30em) and (orientation: landscape) {

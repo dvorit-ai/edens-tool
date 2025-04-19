@@ -4,18 +4,10 @@ let itemName = "";
 
 // Define point values for each section
 const sectionPoints = {
-    section2: 3,
-    section3: 1,
-    section4: 3,
-    section5: 2,
-    section6: 4,
-    section7: 2,
-    section8: 2,
-    section9: 4,
-    section10: 2,
-    section11: 3,
-    section12: 4,
-    section13: 1
+    section2: 1,
+    section3: 2,
+    section4: 2,
+    section5: 3,
     // Add more sections as needed
 };
 
@@ -353,59 +345,95 @@ function showInfo() {
     }
   }
 
-// Run away button!!!!!
-const runButton = document.querySelector('#runAwayButton');
-let firstHover = true;
-
-const moveNoButton = () => {
-  if (firstHover) {
-    // On first hover, get current position before making any changes
-    const rect = runButton.getBoundingClientRect();
-    
-    // Set to absolute positioning at current visual position
-    runButton.style.position = 'absolute';
-    runButton.style.left = rect.left + 'px';
-    runButton.style.top = rect.top + 'px';
-    
-    // Small delay before moving to allow the transition to work
-    setTimeout(() => {
-      randomizePosition();
-    }, 10);
-    
-    firstHover = false;
-  } else {
-    // For subsequent hovers, just randomize position
-    randomizePosition();
-  }
-}
-
-function randomizePosition() {
-  var x = Math.random() * (window.innerWidth - runButton.offsetWidth);
-  var y = Math.random() * (window.innerHeight - runButton.offsetHeight);
-  
-  runButton.style.left = `${x}px`;
-  runButton.style.top = `${y}px`;
-}
-
-runButton.addEventListener('mouseenter', moveNoButton);
-
-// Alert are you sure??
-
-// function areYouSure(){
-//     alert("Are you sure?");
-// }
-
-// function areYouSure() {
-//     var x = document.getElementById("areYouSure-1");
-//     if (x.style.display === "none") {
-//       x.style.display = "block";
-//     } else {
-//       x.style.display = "none";
-//     }
-//   }
 
 
-// TESTING CLAUDE UPDATE April 15. 2025
+
+
+//   SECTION 1: RUN AWAY BUTTON
+
+// Run away button with delayed click handling
+document.addEventListener('DOMContentLoaded', function() {
+    const runButton = document.getElementById('runAwayButton');
+    let moveCount = 0;
+    const MAX_MOVES = 8;
+
+    // Function to initialize button position
+    function initButtonPosition() {
+        const rect = runButton.getBoundingClientRect();
+        runButton.style.position = 'absolute';
+        runButton.style.left = rect.left + 'px';
+        runButton.style.top = rect.top + 'px';
+    }
+
+    // Function to move button
+    function moveButton() {
+        moveCount++;
+        if (moveCount <= MAX_MOVES) {
+            const x = Math.random() * (window.innerWidth - runButton.offsetWidth);
+            const y = Math.random() * (window.innerHeight - runButton.offsetHeight);
+            runButton.style.left = x + 'px';
+            runButton.style.top = y + 'px';
+            return true;
+        }
+        return false;
+    }
+
+    // Override the button's click behavior
+    const originalClickHandlers = [];
+
+    // Store original click handlers
+    const originalAddEventListener = runButton.addEventListener;
+    runButton.addEventListener = function(type, listener, options) {
+        if (type === 'click') {
+            originalClickHandlers.push({listener, options});
+        } else {
+            originalAddEventListener.call(this, type, listener, options);
+        }
+    };
+
+    // Replace with our custom handler
+    runButton.onclick = function(e) {
+        // Stop the event immediately
+        e.preventDefault();
+        e.stopPropagation();
+
+        // First time, initialize position
+        if (moveCount === 0) {
+            initButtonPosition();
+        }
+
+        // Move the button if we haven't reached max moves
+        if (moveCount < MAX_MOVES) {
+            moveButton();
+            return false;
+        } else {
+            // We've reached max moves, proceed with original behavior after a short delay
+            setTimeout(function() {
+                // Manually trigger the standard handler
+                handleAnswer(runButton);
+            }, 50);
+            return false;
+        }
+    };
+
+    // Still handle mouseenter for desktop
+    runButton.addEventListener('mouseenter', function() {
+        if (moveCount === 0) {
+            initButtonPosition();
+        }
+        moveButton();
+    });
+});
+
+
+
+
+
+
+
+
+
+// SECTION 2: POP UP ARE YOU SURE??? 
 
 // Add this at the very end of your JavaScript file
 document.addEventListener('DOMContentLoaded', function() {
@@ -514,3 +542,125 @@ document.addEventListener('DOMContentLoaded', function() {
         finishPopupSequence("2"); // Finish with "no" (value 2)
     };
 });
+
+
+
+// SECTION 3: FAKE BUTTON DRAGGABLE!!
+
+// Simple draggable button overlay with mobile alignment fix
+document.addEventListener('DOMContentLoaded', function() {
+    // Find the yes button in section4
+    const section4 = document.getElementById('section4');
+    if (!section4) return;
+    
+    const yesButton = section4.querySelector('button[value="1"]');
+    if (!yesButton) return;
+    
+    // Create a fake button that looks identical
+    const fakeButton = document.createElement('button');
+    fakeButton.textContent = yesButton.textContent;
+    fakeButton.className = yesButton.className;
+    fakeButton.style.position = 'absolute';
+    fakeButton.style.cursor = 'grab';
+    
+    // Add it to the document
+    document.body.appendChild(fakeButton);
+    
+    // Position it over the real button with mobile adjustment
+    function positionFakeButton() {
+        const rect = yesButton.getBoundingClientRect();
+        fakeButton.style.left = (rect.left + window.scrollX) + 'px';
+        
+        // Mobile adjustment - check if we're on a mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // Apply a small adjustment for mobile devices
+        if (isMobile) {
+            // Adjust vertical position to account for mobile differences
+            fakeButton.style.top = (rect.top + window.scrollY + 2) + 'px';
+        } else {
+            fakeButton.style.top = (rect.top + window.scrollY) + 'px';
+        }
+        
+        fakeButton.style.width = rect.width + 'px';
+        fakeButton.style.height = rect.height + 'px';
+    }
+    
+    // Position initially and when showing section4
+    positionFakeButton();
+    
+    // Make it draggable
+    let isDragging = false;
+    
+    fakeButton.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        const startX = e.clientX - fakeButton.offsetLeft;
+        const startY = e.clientY - fakeButton.offsetTop;
+        
+        function moveAt(x, y) {
+            fakeButton.style.left = (x - startX) + 'px';
+            fakeButton.style.top = (y - startY) + 'px';
+        }
+        
+        function onMouseMove(e) {
+            if (isDragging) {
+                moveAt(e.clientX, e.clientY);
+            }
+        }
+        
+        document.addEventListener('mousemove', onMouseMove);
+        
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onMouseMove);
+        }, {once: true});
+    });
+    
+    // For mobile
+    fakeButton.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        const touch = e.touches[0];
+        const startX = touch.clientX - fakeButton.offsetLeft;
+        const startY = touch.clientY - fakeButton.offsetTop;
+        
+        function moveAt(x, y) {
+            fakeButton.style.left = (x - startX) + 'px';
+            fakeButton.style.top = (y - startY) + 'px';
+        }
+        
+        function onTouchMove(e) {
+            if (isDragging) {
+                const touch = e.touches[0];
+                moveAt(touch.clientX, touch.clientY);
+                e.preventDefault();
+            }
+        }
+        
+        document.addEventListener('touchmove', onTouchMove, {passive: false});
+        
+        document.addEventListener('touchend', function() {
+            isDragging = false;
+            document.removeEventListener('touchmove', onTouchMove);
+        }, {once: true});
+        
+        e.preventDefault();
+    }, {passive: false});
+    
+    // Hide/show fake button when changing sections
+    const originalShowSection = window.showSection;
+    window.showSection = function(index) {
+        originalShowSection(index);
+        
+        // Show fake button only on section4
+        if (index === 3) { // Assuming section4 is index 3 (0-based)
+            fakeButton.style.display = 'block';
+            positionFakeButton();
+        } else {
+            fakeButton.style.display = 'none';
+        }
+    };
+    
+    // Handle window resize
+    window.addEventListener('resize', positionFakeButton);
+});
+
