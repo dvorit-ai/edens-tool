@@ -175,6 +175,9 @@ function handleAnswer(buttonElement) {
         } else if (noTotal >= yesTotal) {
             completionHTML = `<h1>We both know you shouldn’t spend this money on the <span class="item-placeholder">${itemName}</span> right now.<br><br> Try again next time babes.</h1>`;
         } 
+
+        // Change page styling to black background with white text
+        document.body.style.backgroundColor = "var(--green-light)";
         
         // Show completion message
         const completionMessage = document.getElementById('completionMessage');
@@ -273,6 +276,9 @@ function resetQuiz() {
     userAnswers = [];
     itemName = "";
     currentSectionIndex = 0;
+
+    // Reset the body styles
+    document.body.style.backgroundColor = "";
     
     // Reset the input field
     const inputField = document.getElementById('itemInput');

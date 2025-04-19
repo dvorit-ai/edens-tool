@@ -18,9 +18,7 @@ let currentSectionIndex = 0;
 // Function to show current section and hide others
 function showSection(index) {
     sections.forEach((section, i) => {
-        if (section.id !== 'resultsSection') { // Skip the results section when hiding
-            section.style.display = i === index ? 'block' : 'none';
-        }
+        section.style.display = i === index ? 'block' : 'none';
     });
 }
 
@@ -60,49 +58,6 @@ function updateQuestions() {
 function initializeResultsTable() {
     const table = document.getElementById('resultsTable');
     if (!table) return;
-    
-    // Clear existing table
-    table.innerHTML = '';
-    
-    // Create table header
-    const thead = document.createElement('thead');
-    thead.innerHTML = `
-        <tr>
-            <th>buy it</th>
-            <th>don't buy it</th>
-            <th></th>
-        </tr>
-    `;
-    table.appendChild(thead);
-    
-    // Create table body with empty rows for all questions
-    const tbody = document.createElement('tbody');
-    
-    // Create a row for each question (excluding the first input question)
-    for (let i = 1; i < sections.length; i++) {
-        if (sections[i].id !== 'resultsSection') {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td id="yes-cell-${i}" class="empty-cell"></td>
-                <td id="no-cell-${i}" class="empty-cell"></td>
-                <td>Q${i}</td>
-            `;
-            tbody.appendChild(row);
-        }
-    }
-    
-    table.appendChild(tbody);
-    
-    // Create table footer for totals
-    const tfoot = document.createElement('tfoot');
-    tfoot.innerHTML = `
-        <tr>
-            <td id="yesTotal">0 points</td>
-            <td id="noTotal">0 points</td>
-            <td></td>
-        </tr>
-    `;
-    table.appendChild(tfoot);
 }
 
 // Function to handle button clicks for yes/no questions
@@ -121,12 +76,6 @@ function handleAnswer(buttonElement) {
         points: pointValue,
         questionNumber: currentSectionIndex // Store the question number for display
     });
-
-    // Update specific table cell for this question
-    updateTableCell(currentSectionIndex, buttonValue, pointValue);
-    
-    // Update totals
-    updateTotals();
 
     // Move to next section
     currentSectionIndex++;
@@ -163,10 +112,13 @@ function handleAnswer(buttonElement) {
         // Create a different message based on which column has more points
         let completionHTML = '';
         if (yesTotal > noTotal) {
-            completionHTML = `<h1>Sounds like you’ve really thought this through—go ahead and buy the <span class="item-placeholder">${itemName}</span>!</h1>`;
+            completionHTML = `<h1>Okay fine, I give in.<br> Go ahead and buy the <span class="item-placeholder">${itemName}</span>!<br><br>Just make sure you enjoy!</h1>`;
         } else if (noTotal >= yesTotal) {
             completionHTML = `<h1>We both know you shouldn’t spend this money on the <span class="item-placeholder">${itemName}</span> right now.<br><br> Try again next time babes.</h1>`;
         } 
+
+        // Change page styling to black background with white text
+        document.body.style.backgroundColor = "var(--green-light)";
         
         // Show completion message
         const completionMessage = document.getElementById('completionMessage');
@@ -177,86 +129,9 @@ function handleAnswer(buttonElement) {
             const message = document.createElement('div');
             message.id = 'completionMessage';
             message.innerHTML = completionHTML;
-            document.body.appendChild(message); // Append to body instead of resultsSection
+            document.body.appendChild(message);
         }
     }
-}
-
-// Function to generate checkmarks or X marks based on points
-function generateMarks(points, isYes) {
-    if (points === 0) return '';
-    
-    let marks = '';
-    const symbol = isYes ? '✔' : '✘';
-    
-    for (let i = 0; i < points; i++) {
-        marks += symbol;
-    }
-    
-    return marks;
-}
-
-// Function to update a specific table cell
-function updateTableCell(questionIndex, answerValue, points) {
-    // Get the cells for this question
-    const yesCell = document.getElementById(`yes-cell-${questionIndex}`);
-    const noCell = document.getElementById(`no-cell-${questionIndex}`);
-    
-    if (!yesCell || !noCell) return;
-    
-    // Clear both cells first
-    yesCell.innerHTML = '';
-    yesCell.className = 'empty-cell';
-    yesCell.style.backgroundColor = '';
-    
-    noCell.innerHTML = '';
-    noCell.className = 'empty-cell';
-    noCell.style.backgroundColor = '';
-    
-    // Update the appropriate cell based on the answer
-    if (answerValue === "1") {
-        // Update yes cell
-        yesCell.innerHTML = generateMarks(points, true);
-        yesCell.className = 'yes-cell';
-        
-        // Set opacity based on points
-        const opacity = Math.min(0.2 + (points * 0.2), 1);
-        yesCell.style.backgroundColor = `rgba(132, 159, 232, ${opacity})`;
-    } else if (answerValue === "2") {
-        // Update no cell
-        noCell.innerHTML = generateMarks(points, false);
-        noCell.className = 'no-cell';
-        
-        // Set opacity based on points
-        const opacity = Math.min(0.2 + (points * 0.2), 1);
-        noCell.style.backgroundColor = `rgba(247, 148, 73, ${opacity})`;
-    }
-}
-
-// Function to update the point totals
-function updateTotals() {
-    let yesTotal = 0;
-    let noTotal = 0;
-    
-    userAnswers.forEach(answer => {
-        if (answer.value === "1") {
-            yesTotal += answer.points;
-        } else if (answer.value === "2") {
-            noTotal += answer.points;
-        }
-    });
-    
-    // Update the totals in the table footer
-    const yesTotalElement = document.getElementById('yesTotal');
-    const noTotalElement = document.getElementById('noTotal');
-
-    if (yesTotalElement) {
-        yesTotalElement.textContent = `${yesTotal} points`;
-    }
-
-    if (noTotalElement) {
-        noTotalElement.textContent = `${noTotal} points`;
-}
 }
 
 // Function to reset the quiz
@@ -265,6 +140,9 @@ function resetQuiz() {
     userAnswers = [];
     itemName = "";
     currentSectionIndex = 0;
+
+    // Reset the body styles
+    document.body.style.backgroundColor = "";
     
     // Reset the input field
     const inputField = document.getElementById('itemInput');
@@ -561,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fakeButton.textContent = yesButton.textContent;
     fakeButton.className = yesButton.className;
     fakeButton.style.position = 'absolute';
-    fakeButton.style.cursor = 'grab';
+    fakeButton.style.cursor = 'move';
     
     // Add it to the document
     document.body.appendChild(fakeButton);
@@ -664,3 +542,54 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', positionFakeButton);
 });
 
+
+
+
+
+// SECTION 5: SMALL BUTTON
+
+document.addEventListener('DOMContentLoaded', function() {
+  
+    const noButton = section5.querySelector('#smallButton');
+    if (!noButton) return;
+    
+    // Flag to track if the button has been shrunk
+    let buttonShrunk = false;
+    
+    // Add transition for smooth shrinking
+    noButton.style.transition = 'transform 0.3s ease-out';
+    
+    // Override the default click handler for this button
+    noButton.addEventListener('click', function(e) {
+        // Stop the default action
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (!buttonShrunk) {
+            // First click: shrink the button
+            noButton.style.transform = 'scale(0.1)'; // Shrink to 20% of original size
+            noButton.style.opacity = '0.2'; 
+            buttonShrunk = true;
+        } else {
+            // Use setTimeout to delay the next section
+            setTimeout(function() {
+                // Call your handleAnswer function
+                handleAnswer(noButton);
+            }, 200);
+        }
+        
+        return false;
+    }, true); // true for useCapture to ensure our handler runs first
+    
+    // Reset button when moving away from this section
+    const originalShowSection = window.showSection;
+    window.showSection = function(index) {
+        originalShowSection(index);
+        
+        // If we're not showing section5, reset the button
+        if (index !== 4) { // Assuming section5 is index 4 (0-based)
+            noButton.style.transform = 'scale(1)';
+            buttonShrunk = false;
+        }
+    };
+});

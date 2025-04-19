@@ -1,5 +1,6 @@
 :root {
     --green:rgb(28, 177, 113);
+    --green-light:rgba(28, 177, 113, 0.35);
     --border-radius: 5px;
   }
 
@@ -199,7 +200,7 @@ th {
     margin-top: 15px;
 }
 
-#smallButton{
+/* #smallButton{
     width: fit-content;
     height: 10px;
     font-size: 0.01em;
@@ -207,7 +208,7 @@ th {
     padding: 0px;
     border-radius: 3px;
     opacity:0.1;
-}
+} */
 
 @media (min-width: 30em) and (orientation: landscape) {
     body{
