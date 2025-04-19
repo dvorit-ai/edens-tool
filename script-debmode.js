@@ -4,7 +4,7 @@ let itemName = "";
 
 // Define point values for each section
 const sectionPoints = {
-    section2: 4,
+    section2: 3,
     section3: 1,
     section4: 3,
     section5: 2,
@@ -353,15 +353,36 @@ function showInfo() {
     }
   }
 
-
-// Run away button!!!!! 
+// Run away button!!!!!
 const runButton = document.querySelector('#runAwayButton');
+let firstHover = true;
 
 const moveNoButton = () => {
+  if (firstHover) {
+    // On first hover, get current position before making any changes
+    const rect = runButton.getBoundingClientRect();
+    
+    // Set to absolute positioning at current visual position
+    runButton.style.position = 'absolute';
+    runButton.style.left = rect.left + 'px';
+    runButton.style.top = rect.top + 'px';
+    
+    // Small delay before moving to allow the transition to work
+    setTimeout(() => {
+      randomizePosition();
+    }, 10);
+    
+    firstHover = false;
+  } else {
+    // For subsequent hovers, just randomize position
+    randomizePosition();
+  }
+}
+
+function randomizePosition() {
   var x = Math.random() * (window.innerWidth - runButton.offsetWidth);
   var y = Math.random() * (window.innerHeight - runButton.offsetHeight);
-
-  runButton.style.position = 'absolute';
+  
   runButton.style.left = `${x}px`;
   runButton.style.top = `${y}px`;
 }
@@ -392,6 +413,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const specialNoButton = document.getElementById('special-no-button');
     if (!specialNoButton) return;
     
+    // Create a variable to track the user's final choice for section3
+    let section3FinalValue = null;
+    
     // First, completely block the standard navigation for section3
     // This is a direct override of your showSection function
     const originalShowSection = window.showSection;
@@ -406,21 +430,57 @@ document.addEventListener('DOMContentLoaded', function() {
         originalShowSection(index);
     };
     
-    // Next, handle the button click to show popups
-    specialNoButton.onclick = function(e) {
-        // Stop any other handlers
-        e.stopPropagation();
-        e.preventDefault();
+    // Override the original handleAnswer function to skip section3
+    const originalHandleAnswer = window.handleAnswer;
+    window.handleAnswer = function(buttonElement) {
+        // If this is section3 and the special-no-button, we handle it differently
+        if (buttonElement === specialNoButton || 
+            (buttonElement.closest && buttonElement.closest('#section3') && buttonElement.value === "1")) {
+            // Show the popup sequence instead
+            showPopupSequence();
+            return; // Don't process through the normal flow
+        }
         
+        // Otherwise, handle normally
+        originalHandleAnswer(buttonElement);
+    };
+    
+    // Function to show the popup sequence
+    function showPopupSequence() {
         // Show first popup
         const popupContainer = document.getElementById('popup-container');
         popupContainer.style.display = 'flex';
         document.getElementById('popup-1').style.display = 'block';
         document.getElementById('popup-2').style.display = 'none';
         document.getElementById('popup-3').style.display = 'none';
+    }
+    
+    // Function to finish the popup sequence and move to next section
+    function finishPopupSequence(finalValue) {
+        // Hide popup container
+        document.getElementById('popup-container').style.display = 'none';
         
-        // Set a flag to indicate we're in popup mode
-        window.inPopupSequence = true;
+        // Set the final value
+        section3FinalValue = finalValue;
+        
+        // Process the section answer with appropriate value
+        const fakeSectionButton = {
+            value: section3FinalValue,
+            closest: function() { return document.getElementById('section3'); }
+        };
+        
+        // Process the answer with the standard handler
+        originalHandleAnswer(fakeSectionButton);
+    }
+    
+    // Next, handle the button click to show popups
+    specialNoButton.onclick = function(e) {
+        // Stop any other handlers
+        e.stopPropagation();
+        e.preventDefault();
+        
+        // Show the popup sequence
+        showPopupSequence();
         
         return false;
     };
@@ -432,8 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     document.getElementById('popup1-no').onclick = function() {
-        document.getElementById('popup-container').style.display = 'none';
-        window.inPopupSequence = false;
+        finishPopupSequence("2"); // Finish with "no" (value 2)
     };
     
     // Add handlers for popup2
@@ -443,33 +502,15 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     document.getElementById('popup2-no').onclick = function() {
-        document.getElementById('popup-container').style.display = 'none';
-        window.inPopupSequence = false;
+        finishPopupSequence("2"); // Finish with "no" (value 2)
     };
     
     // Handle popup3 buttons
     document.getElementById('popup3-yes').onclick = function() {
-        // Hide popup container
-        document.getElementById('popup-container').style.display = 'none';
-        
-        // Process answer using a fake button
-        handleAnswer({
-            value: "2",
-            closest: function() { return document.getElementById('section3'); }
-        });
-        
-        // Clear popup flag
-        window.inPopupSequence = false;
-        
-        // IMPORTANT: Force-increment the index
-        currentSectionIndex = 3; // This should be the index of section4
-        
-        // Now force-show the next section
-        originalShowSection(currentSectionIndex);
+        finishPopupSequence("1"); // Finish with "yes" (value 1)
     };
     
     document.getElementById('popup3-no').onclick = function() {
-        document.getElementById('popup-container').style.display = 'none';
-        window.inPopupSequence = false;
+        finishPopupSequence("2"); // Finish with "no" (value 2)
     };
 });
