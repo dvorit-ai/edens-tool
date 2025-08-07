@@ -1,6 +1,7 @@
 :root {
     --green:rgb(28, 177, 113);
     --green-light:rgba(28, 177, 113, 0.35);
+    --red-light:rgb(247, 122, 73, 0.35);
     --border-radius: 5px;
   }
 

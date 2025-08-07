@@ -176,8 +176,15 @@ function handleAnswer(buttonElement) {
             completionHTML = `<h1>We both know you shouldn’t spend this money on the <span class="item-placeholder">${itemName}</span> right now.<br><br> Try again next time babes.</h1>`;
         } 
 
-        // Change page styling to black background with white text
-        document.body.style.backgroundColor = "var(--green-light)";
+        // // Change page styling to black background with white text
+        // document.body.style.backgroundColor = "var(--green-light)";
+
+        // Change page styling - green for yes, red for no
+        if (yesTotal > noTotal) {
+            document.body.style.backgroundColor = "var(--green-light)";
+        } else {
+            document.body.style.backgroundColor = "var(--red-light)";
+        }
         
         // Show completion message
         const completionMessage = document.getElementById('completionMessage');
